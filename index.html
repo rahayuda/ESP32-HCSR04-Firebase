@@ -4,10 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESP32 HCSR04</title>
+  <style>
+    /* Styling untuk progres bar */
+    progress {
+      width: 100%;
+      height: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>ESP32 HCSR04</h1>
+  
   <div id="distanceData"></div>
+  
+  <!-- Progres bar untuk jarak -->
+  <progress id="distanceProgress" value="0" max="500"></progress>
 
   <script type="module">
     // Import Firebase SDK
@@ -33,16 +44,22 @@
     // Referensi ke path data jarak
     const distanceRef = ref(database, '/device/distance');
 
-    // Fungsi untuk menampilkan data jarak di halaman
+    // Fungsi untuk menampilkan data jarak dan mengupdate progres bar
     onValue(distanceRef, (snapshot) => {
       const distance = snapshot.val();
       const distanceDataContainer = document.getElementById('distanceData');
+      const distanceProgress = document.getElementById('distanceProgress');
+      
       distanceDataContainer.innerHTML = ""; // Bersihkan kontainer sebelum menambahkan data baru
 
       if (distance !== null) {
+        // Menampilkan jarak
         const distanceInfo = document.createElement('p');
         distanceInfo.textContent = `Distance: ${distance} cm`;
         distanceDataContainer.appendChild(distanceInfo);
+        
+        // Mengupdate progres bar
+        distanceProgress.value = distance; // Update nilai progres bar
       } else {
         distanceDataContainer.innerHTML = "No distance data available.";
       }
