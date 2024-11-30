@@ -5,10 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESP32 HCSR04</title>
   <style>
-    /* Styling untuk progres bar */
-    progress {
+    /* Styling untuk progres bar custom */
+    #progressWrapper {
       width: 100%;
-      height: 30px;
+      background-color: #f3f3f3;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      height: 20px;
+      margin-top: 10px;
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      border-radius: 5px;
+      transition: width 0.2s ease-in-out;
     }
   </style>
 </head>
@@ -17,8 +29,10 @@
   
   <div id="distanceData"></div>
   
-  <!-- Progres bar untuk jarak -->
-  <progress id="distanceProgress" value="0" max="500"></progress>
+  <!-- Progres bar custom -->
+  <div id="progressWrapper">
+    <div id="progressBar"></div>
+  </div>
 
   <script type="module">
     // Import Firebase SDK
@@ -48,7 +62,7 @@
     onValue(distanceRef, (snapshot) => {
       const distance = snapshot.val();
       const distanceDataContainer = document.getElementById('distanceData');
-      const distanceProgress = document.getElementById('distanceProgress');
+      const progressBar = document.getElementById('progressBar');
       
       distanceDataContainer.innerHTML = ""; // Bersihkan kontainer sebelum menambahkan data baru
 
@@ -58,8 +72,9 @@
         distanceInfo.textContent = `Distance: ${distance} cm`;
         distanceDataContainer.appendChild(distanceInfo);
         
-        // Mengupdate progres bar
-        distanceProgress.value = distance; // Update nilai progres bar
+        // Mengupdate progres bar dengan nilai jarak (dalam persentase)
+        let percentage = Math.min(distance / 500 * 100, 100); // Pastikan nilai tidak melebihi 100%
+        progressBar.style.width = percentage + "%"; // Update lebar progres bar
       } else {
         distanceDataContainer.innerHTML = "No distance data available.";
       }
