@@ -6,8 +6,8 @@ const int TRIGGER_PIN = 15;
 const int ECHO_PIN = 2;
 
 // WiFi dan Firebase konfigurasi
-#define WIFI_SSID "Nethome-Visti"
-#define WIFI_PASSWORD "@Bedahuluno14!"
+#define WIFI_SSID "imissu@unud"
+#define WIFI_PASSWORD ""
 #define DATABASE_URL "https://wifiscanfirebase-default-rtdb.firebaseio.com/"
 #define API_KEY "AIzaSyDRZfCQmKFdjUwuW-lq4P5S3k2wntpP26E" // Ganti dengan Web API Key Anda
 
