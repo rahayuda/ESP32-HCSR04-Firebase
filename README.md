@@ -1,2 +1,2 @@
 # ESP32-HCSR04-Firebase
-utrasonic.vercel.app
+https://ultrasonic.vercel.app
