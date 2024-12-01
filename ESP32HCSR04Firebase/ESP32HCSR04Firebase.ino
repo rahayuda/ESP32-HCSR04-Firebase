@@ -16,13 +16,13 @@ FirebaseConfig config;
 FirebaseAuth auth;
 
 unsigned long lastSendTime = 0; // Untuk menyimpan waktu terakhir pengiriman
-const unsigned long interval = 5000; // Interval pengiriman data (5 detik)
+const unsigned long interval = 1000; // Interval pengiriman data (5 detik)
 
 void setup() {
   // Inisialisasi pin dan komunikasi serial
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // Koneksi ke Wi-Fi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
