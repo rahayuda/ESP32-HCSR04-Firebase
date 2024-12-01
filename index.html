@@ -3,9 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 HCSR04</title>
-  <style>
-    /* Styling untuk progres bar custom */
+  <title>Radar with Multiple Dots</title>
+  <style type="text/css">
+    #radar {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      border: 3px solid #0c0;
+      background-color: #020;
+      border-radius: 50%;
+    }
+    #radar > * {
+      position: absolute;
+    }
+    .beacon {
+      left: 50%;
+      top: 50%;
+      border-style: solid;
+      border-width: 10px 200px 10px 0;
+      border-color: transparent;
+      margin-top: -10px;
+      transform-origin: 0 50%;
+    }
+    #beacon {
+      border-right-color: #0c0;
+      animation: spin 60s 0s linear infinite;
+    }
+    #beacon-15 {
+      border-right-color: rgba(0,204,0,0.15);
+      animation: spin 60s 3s linear infinite;
+    }
+    #beacon-25 {
+      border-right-color: rgba(0,204,0,0.30);
+      animation: spin 60s 2s linear infinite;
+    }
+    #beacon-50 {
+      border-right-color: rgba(0,204,0,0.45);
+      animation: spin 60s 1s linear infinite;
+    }
+    #beacon-75 {
+      border-right-color: rgba(0,204,0,0.15);
+      animation: spin 60s 0s linear infinite;
+    }
+    .circle {
+      left: 50%;
+      top: 50%;
+      border: 1px solid #0c0;
+      border-radius: 50%;
+    }
+    #circle-big {
+      width: 300px;
+      height: 300px;
+      margin: -150px;
+    }
+    #circle-medium {
+      width: 200px;
+      height: 200px;
+      margin: -100px;
+    }
+    #circle-small {
+      width: 100px;
+      height: 100px;
+      margin: -50px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      background-color: #0c0;
+      border-radius: 50%;
+      animation: blink 1.5s linear infinite, disappear 3s forwards;
+    }
+    #vertical {
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #0c0;
+    }
+    #horizontal {
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #0c0;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.3;
+      }
+    }
+
     #progressWrapper {
       width: 100%;
       background-color: #f3f3f3;
@@ -22,6 +124,7 @@
       border-radius: 1px;
       transition: width 0.2s ease-in-out;
     }
+
   </style>
 </head>
 <body>
@@ -34,36 +137,48 @@
     <div id="progressBar"></div>
   </div>
 
+  <div id="radar">
+    <div class="beacon" id="beacon"></div>
+    <div class="beacon" id="beacon-75"></div>
+    <div class="beacon" id="beacon-50"></div>
+    <div class="beacon" id="beacon-25"></div>
+    <div class="beacon" id="beacon-15"></div>
+    <div class="circle" id="circle-big"></div>
+    <div class="circle" id="circle-medium"></div>
+    <div class="circle" id="circle-small"></div>
+    <div id="vertical"></div>
+    <div id="horizontal"></div>
+  </div>
+
   <script type="module">
-    // Import Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Konfigurasi Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDRZfCQmKFdjUwuW-lq4P5S3k2wntpP26E",
-      authDomain: "wifiscanfirebase.firebaseapp.com",
-      databaseURL: "https://wifiscanfirebase-default-rtdb.firebaseio.com",
-      projectId: "wifiscanfirebase",
-      storageBucket: "wifiscanfirebase.appspot.com",
-      messagingSenderId: "586448397048",
-      appId: "1:586448397048:web:dea539e352789765a1910d",
-      measurementId: "G-CZXPR54MTV"
-    };
+  // Konfigurasi Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRZfCQmKFdjUwuW-lq4P5S3k2wntpP26E",
+    authDomain: "wifiscanfirebase.firebaseapp.com",
+    databaseURL: "https://wifiscanfirebase-default-rtdb.firebaseio.com",
+    projectId: "wifiscanfirebase",
+    storageBucket: "wifiscanfirebase.appspot.com",
+    messagingSenderId: "586448397048",
+    appId: "1:586448397048:web:dea539e352789765a1910d",
+    measurementId: "G-CZXPR54MTV"
+  };
 
-    // Inisialisasi Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+  // Inisialisasi Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const distanceDataRef = ref(database, '/device/distance');
 
-    // Referensi ke path data jarak
-    const distanceRef = ref(database, '/device/distance');
+  let currentDistance = null;  // Variabel untuk menyimpan jarak terakhir
 
-    // Fungsi untuk menampilkan data jarak dan mengupdate progres bar
-    onValue(distanceRef, (snapshot) => {
-      const distance = snapshot.val();
-      const distanceDataContainer = document.getElementById('distanceData');
-      const progressBar = document.getElementById('progressBar');
-      
+// Fungsi untuk menampilkan data jarak dan mengupdate progres bar
+onValue(distanceDataRef, (snapshot) => {
+  const distance = snapshot.val();
+  const distanceDataContainer = document.getElementById('distanceData');
+  const progressBar = document.getElementById('progressBar');
+
       distanceDataContainer.innerHTML = ""; // Bersihkan kontainer sebelum menambahkan data baru
 
       if (distance !== null) {
@@ -73,12 +188,65 @@
         distanceDataContainer.appendChild(distanceInfo);
         
         // Mengupdate progres bar dengan nilai jarak (dalam persentase)
-        let percentage = Math.min(distance / 500 * 100, 100); // Pastikan nilai tidak melebihi 100%
+        let percentage = Math.min(distance / 50 * 50, 100); // Pastikan nilai tidak melebihi 100%
         progressBar.style.width = percentage + "%"; // Update lebar progres bar
       } else {
         distanceDataContainer.innerHTML = "No distance data available.";
       }
     });
-  </script>
+
+  // Fungsi untuk menambahkan atau memperbarui dot berdasarkan angle dan distance
+  function addDotToRadar(servoAngle, distance) {
+    const radar = document.getElementById('radar');
+    const radarSize = radar.offsetWidth;  // Ukuran radar (400px)
+
+    const maxDistance = radarSize / 2;  // Radius radar dalam piksel (200px)
+    const distanceInPixels = Math.min(distance, 30) / 30 * maxDistance;  // Ubah distance ke dalam piksel dan batasi agar tidak lebih dari 200px
+
+    const angleInRadians = (servoAngle - 90) * Math.PI / 180;  // Mengonversi angle ke radian dan mengubah referensi ke atas
+    const x = distanceInPixels * Math.cos(angleInRadians);
+    const y = distanceInPixels * Math.sin(angleInRadians);
+
+    const leftPercent = 50 + (x / radarSize) * 100;
+    const topPercent = 50 - (y / radarSize) * 100;
+
+    let dot = radar.querySelector(`#dot-${servoAngle}`);
+    if (!dot) {
+      dot = document.createElement('div');
+      dot.classList.add('dot');
+      dot.id = `dot-${servoAngle}`;
+      radar.appendChild(dot);
+    }
+
+    setTimeout(() => {
+      dot.remove();
+    }, 30000); // Menghapus dot setelah 10 detik
+
+    dot.style.left = `${leftPercent}%`;
+    dot.style.top = `${topPercent}%`;
+  }
+
+// Variabel global untuk menyimpan sudut (angle)
+let angle = 90;
+
+// Interval untuk mengubah nilai angle setiap detik
+setInterval(() => {
+  angle = (angle - 1) % 360; // Perubahan angle dari 0 hingga 360
+}, 170); // Update angle setiap 1 detik
+
+// Listener Firebase untuk perubahan distance
+onValue(distanceDataRef, (snapshot) => {
+  const distance = snapshot.val();
+  if (distance !== null && distance !== currentDistance) {
+    console.log('Distance from Firebase:', distance);
+    currentDistance = distance;  // Simpan jarak terakhir yang diterima
+
+    // Gunakan nilai angle yang diperbarui untuk menampilkan dot
+    addDotToRadar(angle, distance);
+  }
+});
+
+</script>
+
 </body>
 </html>
