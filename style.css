@@ -1,0 +1,255 @@
+* { /* universal */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Calibri';
+}
+
+body {
+  background-color: #DCF2F1;
+  margin: 0;
+}
+
+hr {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  padding: 10px;
+  background-color: #0F1035;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.head {
+  order: 2;
+  padding: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-left: 25px;
+  border: 1px solid;
+  font-weight: bold;
+  font-size: 20px;
+  color: #7FC7D9;
+}
+
+.head a {
+  text-decoration: none;
+  color: #7FC7D9;
+}
+
+main {
+  min-height: 630px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  margin: 5px;
+  border: solid 1px #DCF2F1;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  margin: 5px;
+  border: solid 1px #DCF2F1;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.center {
+  display: flex;
+  flex-wrap: wrap; 
+  min-height: 800px;
+  width: 50%;
+  margin: 5px;
+  align-items: flex-start; 
+  vertical-align: top;
+  border: solid 1px #DCF2F1;   
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card {
+  border: 1px solid #7FC7D9;
+  margin-bottom: 5px;
+  min-height: 100px;
+  border-radius: 5px; 
+  padding: 10px;
+  background-color: #DCF2F1;
+  color: #0F1035;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.card li {
+  margin-left: 5px;
+}
+
+.card ul {
+ padding: 5px;
+ padding-bottom: 5px; 
+ cursor: pointer;
+
+}
+
+#progressWrapper {
+  width: 100%;
+  background-color: lightgrey;
+  border: 1px solid #ccc;
+  border-radius: 1px;
+  height: 20px;
+  margin-top: 10px;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background-color: #0F1035;
+  border-radius: 1px;
+  transition: width 0.2s ease-in-out;
+}
+
+@media screen and (max-width: 1000px) {
+  main {
+    flex-direction: column;
+  }
+
+  .left,
+  .center,
+  .right {
+    width: 100%;
+    min-height: 10px;
+    flex-direction: column;
+  }
+  .right {
+    order: 1;
+  }
+
+  .left {
+    order: 0;
+  }
+
+  .center {
+    order: 2;
+  }
+
+}
+
+#radar {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  border: 3px solid #0F1035;
+  background-color: #DCF2F1;
+  border-radius: 50%;
+}
+#radar > * {
+  position: absolute;
+}
+.beacon {
+  left: 50%;
+  top: 50%;
+  border-style: solid;
+  border-width: 10px 200px 10px 0;
+  border-color: transparent;
+  margin-top: -10px;
+  transform-origin: 0 50%;
+}
+#beacon {
+  border-right-color: rgba(0,16,0,0.80);
+  animation: spin 60s 0s linear infinite;
+}
+#beacon-15 {
+  border-right-color: rgba(0,16,0,0.05);
+  animation: spin 60s 3.8s linear infinite;
+}
+#beacon-25 {
+  border-right-color: rgba(0,16,0,0.10);
+  animation: spin 60s 2.85s linear infinite;
+}
+#beacon-50 {
+  border-right-color: rgba(0,16,0,0.15);
+  animation: spin 60s 1.9s linear infinite;
+}
+#beacon-75 {
+  border-right-color: rgba(0,16,0,0.20);
+  animation: spin 60s 0.95s linear infinite;
+}
+.circle {
+  left: 50%;
+  top: 50%;
+  border: 1px solid #0F1035;
+  border-radius: 50%;
+}
+#circle-big {
+  width: 300px;
+  height: 300px;
+  margin: -150px;
+}
+#circle-medium {
+  width: 200px;
+  height: 200px;
+  margin: -100px;
+}
+#circle-small {
+  width: 100px;
+  height: 100px;
+  margin: -50px;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #0F1035;
+  border-radius: 50%;
+  animation: blink 1.5s linear infinite, disappear 3s forwards;
+}
+#vertical {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #0F1035;
+}
+#horizontal {
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #0F1035;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
