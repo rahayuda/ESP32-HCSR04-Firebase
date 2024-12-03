@@ -186,11 +186,11 @@ main {
 }
 #beacon-50 {
   border-right-color: rgba(0,16,0,0.15);
-  animation: spin 60s 1.9s linear infinite;
+  animation: spin 60s 2s linear infinite;
 }
 #beacon-75 {
   border-right-color: rgba(0,16,0,0.20);
-  animation: spin 60s 0.95s linear infinite;
+  animation: spin 60s 1s linear infinite;
 }
 .circle {
   left: 50%;
