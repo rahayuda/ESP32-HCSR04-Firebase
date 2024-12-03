@@ -178,15 +178,15 @@ main {
 }
 #beacon-15 {
   border-right-color: rgba(0,16,0,0.05);
-  animation: spin 60s 7.5s linear infinite;
+  animation: spin 60s 4.8s linear infinite;
 }
 #beacon-25 {
   border-right-color: rgba(0,16,0,0.10);
-  animation: spin 60s 5s linear infinite;
+  animation: spin 60s 3.6s linear infinite;
 }
 #beacon-50 {
   border-right-color: rgba(0,16,0,0.15);
-  animation: spin 60s 2.5s linear infinite;
+  animation: spin 60s 2.4s linear infinite;
 }
 #beacon-75 {
   border-right-color: rgba(0,16,0,0.20);
