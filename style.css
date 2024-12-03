@@ -190,7 +190,7 @@ main {
 }
 #beacon-75 {
   border-right-color: rgba(0,16,0,0.20);
-  animation: spin 60s 1.5s linear infinite;
+  animation: spin 60s 1.2s linear infinite;
 }
 .circle {
   left: 50%;
